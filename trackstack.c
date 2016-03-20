@@ -48,11 +48,10 @@ typedef enum
 {
   RTSTACK_FLAG_FULL    =1<<0,    /* Stack entire file */
   RTSTACK_FLAG_VERBOSE =1<<1,    /* Verbose print output */
-  RTSTACK_FLAG_SHARPEN =1<<2,    /* Sharpen, pre stack */
-  RTSTACK_FLAG_NOSTACK =1<<3,    /* Don't stack, just tracking */
-  RTSTACK_FLAG_COORDS  =1<<4,    /* Output coordinates on screen */
-  RTSTACK_FLAG_SHOWSRC =1<<5,    /* Display the source input window */
-  RTSTACK_FLAG_FAST    =1<<6,    /* Don't roll the window, speeds computation */
+  RTSTACK_FLAG_NOSTACK =1<<2,    /* Don't stack, just tracking */
+  RTSTACK_FLAG_COORDS  =1<<3,    /* Output coordinates on screen */
+  RTSTACK_FLAG_SHOWSRC =1<<4,    /* Display the source input window */
+  RTSTACK_FLAG_FAST    =1<<5,    /* Don't roll the window, speeds computation */
 } RTSTACK_FLAGS_T;
 
 /* Global state */ 
@@ -411,14 +410,6 @@ static int RTStackImageStack(CvCapture* capture,
     imageTemp = cvCreateImage(cvGetSize(imageCurrent), (imageCurrent)->depth, (imageCurrent)->nChannels);
     cvCopy(imageCurrent, imageTemp, NULL);
 
-    /* Sharpen the image if requested. Do a Gaussian blur, and then subtract it from
-     * a higher gain verson of the original image */ 
-    if(RTSTACK_GET_FLAG(RTSTACK_FLAG_SHARPEN))
-    { 
-        cvSmooth(imageCurrent, imageTemp, CV_GAUSSIAN, 5, 5, 9, 9);
-        cvAddWeighted(imageCurrent, 1.5, imageTemp, -0.5, 0, imageCurrent);
-    }
-
     /* Display the image ROI */ 
     cvShowImage(currentWindowName, imageCurrent);  
 
@@ -749,6 +740,8 @@ static int RTStackProcessImageStream(CvCapture* capture)
     cvDestroyWindow(currentWindowName);
     if(!RTSTACK_GET_FLAG(RTSTACK_FLAG_NOSTACK))
         cvDestroyWindow(shiftWindowName);
+    if(RTSTACK_GET_FLAG(RTSTACK_FLAG_SHOWSRC))
+      cvDestroyWindow(sourceWindowName);
 
     return 0;
 }
@@ -786,7 +779,6 @@ static void usage(const char* appname)
     fprintf(stdout, "    --outformat,-O     Image output file (eg. png, bmp, etc.) default=png\r\n");
     fprintf(stdout, "    --device,-d        Camera device index (integer)\r\n");
     fprintf(stdout, "    --scale,-s         Scale output image size relative to input image (eg. 0.5, or 2.0)\r\n");
-    fprintf(stdout, "    --sharpen,-p       Sharpen frames before stacking\r\n");
     fprintf(stdout, "    --coords,-c        Print CSV template position on stdout\r\n");
     fprintf(stdout, "    --nostack,-n       Don't stack. Track only.\r\n");
     fprintf(stdout, "    --showsource,-z    Show the source image stream.\r\n");
@@ -816,7 +808,6 @@ int main(int argc, char* argv[])
         {"outformat",   required_argument,  0,    'O'},
         {"device",      required_argument,  0,    'd'},
         {"scale",       required_argument,  0,    's'},
-        {"sharpen",     no_argument,        0,    'p'},
         {"showsource",  no_argument,        0,    'z'},
         {"fastmode",    no_argument,        0,    'm'},
         {"help",        required_argument,  0,    'h'},
@@ -832,7 +823,7 @@ int main(int argc, char* argv[])
     /* This is from the man page example */
     while(1)
     {
-        c = getopt_long(argc, argv, "mzvcnfphO:i:a:o:d:s:", long_options, &option_index);
+        c = getopt_long(argc, argv, "mzvcnfhO:i:a:o:d:s:", long_options, &option_index);
 
         /* Test for end of options */
         if (c == -1)
@@ -888,10 +879,6 @@ int main(int argc, char* argv[])
 
             case 'v':
                 RTSTACK_SET_FLAG(RTSTACK_FLAG_VERBOSE);
-                break;
-
-            case 'p':
-                RTSTACK_SET_FLAG(RTSTACK_FLAG_SHARPEN);
                 break;
 
             case 'c':

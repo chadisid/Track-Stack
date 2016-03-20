@@ -2,7 +2,7 @@
 
 ## Overview
 
-Track+Stack is a multipurpose computer vision utility written in C, utilizing the OpenCV library.  Track+Stack takes a camera stream or video file (multiple formats) as input, tracks templates from a user-selected region of interest (ROI), and stacks a set of such ROIs from a video stream for output to image files or simply viewing on a monitor.
+Track+Stack is a multipurpose computer vision utility written in C, utilizing the OpenCV library.  Track+Stack takes a camera stream or video file (multiple formats) as input, tracks templates from a user-selected region of interest (ROI), and stacks a set of such ROIs from a video stream for output to image files or simply viewing on a monitor. Track+Stack was designed for realtime tracking+stacking of astronomical camera images, but it has many other applications.
 
 There are two basic steps in the Track+Stack workflow:
 
@@ -29,7 +29,6 @@ usage: trackstack [-mzvcnfph] [-i infile] [-a window_size (power of 2)] [-o outf
     --outformat,-O     Image output file (eg. png, bmp, etc.) default=png
     --device,-d        Camera device index (integer)
     --scale,-s         Scale output image size relative to input image (eg. 0.5, or 2.0)
-    --sharpen,-p       Sharpen frames before stacking
     --coords,-c        Print CSV template position on stdout
     --nostack,-n       Don't stack. Track only.
     --showsource,-z    Show the source image stream.
