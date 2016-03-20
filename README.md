@@ -65,7 +65,3 @@ Track+Stack requires pkg-config, Make, gcc, and OpenCV 2.4 libraries.  On Ubuntu
 
 Track+Stack has been tested on Ubuntu 14.04 LTS/15.10, with version 2.4 of the OpenCV library.    
 
-## Known Issues
-
-The program crashes (in OpenCV SSE3 optimized memcpy -- not my code AFAIK) when trying to stack AVIs.    
-

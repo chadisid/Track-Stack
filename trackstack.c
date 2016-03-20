@@ -456,14 +456,19 @@ static int RTStackImageStack(CvCapture* capture,
               returnState = RTSTACK_STATE_TERMINATE;
               write_image = 1;
 
+              /* Use the slower 'full' algorithm for combining the entire file */
               RTStackCombineImages(state.stackWindowImages, state.currentIndex, imageTemp2); 
           }
           else
           {
+              /* If we have enough images for a stack, allocate temp stack.
+               * This is done once (or until we wrap 4.2 bil images) -- TODO */
               if(state.currentIndex == state.stackWindow)
                   for(state.stackTempAlloc = 0; state.stackTempAlloc<state.stackWindow/2; state.stackTempAlloc++)
                       state.stackTemp[state.stackTempAlloc] = cvCreateImage(cvGetSize(imageTemp2), imageTemp2->depth, imageTemp2->nChannels);
 
+              /* Combine our current list of windowed images using stacktemp.
+               * This is the faster 'realtime' algorithm. */
               RTStackCombineImagesWindowed(state.stackWindowImages, state.stackTemp, state.stackWindow, imageTemp2); 
           }
           /* If there is a scale factor, scale the image */
