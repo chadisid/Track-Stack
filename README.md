@@ -18,7 +18,7 @@ Track+Stack attempts to match the template, and captures the ROI with the best m
 
 ## Instructions for Use
 
-<code>
+```
 usage: trackstack [-mzvcnfph] [-i infile] [-a window_size (power of 2)] [-o outfile] [-d camera_index] [-s scale] [-O outformat]
   options:                                          
     --verbose,-v       Additional output on stdout
@@ -35,8 +35,7 @@ usage: trackstack [-mzvcnfph] [-i infile] [-a window_size (power of 2)] [-o outf
     --showsource,-z    Show the source image stream.
     --fastmode,-m      Don't roll the windows (faster, but not continuous).
     --help,-h          Print out this help
-</code>
-
+```
 
 ### Template Selection
 
